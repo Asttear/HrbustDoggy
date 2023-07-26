@@ -26,8 +26,7 @@
     </ContentPage.ToolbarItems>
     <RefreshView Command="{Binding RefreshCommand}"
                  IsRefreshing="{Binding IsRefreshing}"
-                 RefreshColor="{AppThemeBinding Light={StaticResource Primary},
-                                                Dark={StaticResource White}}">
+                 RefreshColor="{StaticResource Primary}">
         <CollectionView EmptyView="没有数据" ItemsSource="{Binding CurrentExams}">
             <CollectionView.Resources>
                 <cvt:ExamColorConverter x:Key="ExamColor" />

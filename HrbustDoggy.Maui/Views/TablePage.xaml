@@ -29,8 +29,7 @@
     </ContentPage.ToolbarItems>
     <RefreshView Command="{Binding RefreshCommand}"
                  IsRefreshing="{Binding IsRefreshing}"
-                 RefreshColor="{AppThemeBinding Light={StaticResource Primary},
-                                                Dark={StaticResource White}}">
+                 RefreshColor="{StaticResource Primary}">
         <ScrollView>
             <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,32">
                 <Grid.GestureRecognizers>
