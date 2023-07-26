@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="HrbustDoggy.Maui.Views.TablePage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:c="clr-namespace:HrbustDoggy.Maui.Views.Controls"
+             xmlns:vm="clr-namespace:HrbustDoggy.Maui.ViewModels"
+             x:DataType="vm:TableViewModel"
+             Loaded="ContentPage_Loaded">
+    <ContentPage.Triggers>
+        <DataTrigger Binding="{Binding HasData}"
+                     TargetType="ContentPage"
+                     Value="True">
+            <Setter Property="Title" Value="{Binding DisplayWeek, StringFormat='第{0}周'}" />
+        </DataTrigger>
+        <DataTrigger Binding="{Binding HasData}"
+                     TargetType="ContentPage"
+                     Value="False">
+            <Setter Property="Title" Value="未载入" />
+        </DataTrigger>
+    </ContentPage.Triggers>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding RefreshCommand}" Text="刷新">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="MDI"
+                                 Glyph="&#xf1b9;"
+                                 Color="White" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <RefreshView Command="{Binding RefreshCommand}"
+                 IsRefreshing="{Binding IsRefreshing}"
+                 RefreshColor="{AppThemeBinding Light={StaticResource Primary},
+                                                Dark={StaticResource White}}">
+        <ScrollView>
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,32">
+                <Grid.GestureRecognizers>
+                    <SwipeGestureRecognizer Direction="Left"
+                                            Swiped="SwipeGestureRecognizer_Swiped"
+                                            Threshold="20" />
+                    <SwipeGestureRecognizer Direction="Right"
+                                            Swiped="SwipeGestureRecognizer_Swiped"
+                                            Threshold="20" />
+                </Grid.GestureRecognizers>
+                <c:ClassGrid Grid.Row="0"
+                             Grid.ColumnSpan="2"
+                             ActualWeek="{Binding ActualWeek}"
+                             ClassTable="{Binding ClassTable}"
+                             DateNow="{Binding Now}"
+                             DisplayWeek="{Binding DisplayWeek}" />
+                <Slider Grid.Row="1"
+                        Grid.Column="0"
+                        Margin="5,0"
+                        IsEnabled="{Binding HasData}"
+                        Maximum="25"
+                        MaximumWidthRequest="500"
+                        Minimum="1"
+                        Value="{Binding DisplayWeek}" />
+                <ImageButton Grid.Row="1"
+                             Grid.Column="1"
+                             Margin="5,0"
+                             Padding="10,0"
+                             Command="{Binding DisplayActualWeekCommand}">
+                    <ImageButton.Source>
+                        <FontImageSource FontFamily="MDI"
+                                         Glyph="&#xf299;"
+                                         Color="{AppThemeBinding Light={StaticResource Primary},
+                                                                 Dark={StaticResource White}}" />
+                    </ImageButton.Source>
+                </ImageButton>
+            </Grid>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>

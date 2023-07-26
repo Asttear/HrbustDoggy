@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="HrbustDoggy.Maui.Views.ExamPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:cvt="clr-namespace:HrbustDoggy.Maui.Views.Converters"
+             xmlns:h="clr-namespace:Hrbust;assembly=Hrbust"
+             xmlns:vm="clr-namespace:HrbustDoggy.Maui.ViewModels"
+             Title="考试信息"
+             x:DataType="vm:ExamViewModel"
+             Loaded="ContentPage_Loaded">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding ToggleShowOutdatedCommand}" Text="切换显示过期条目">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="MDI"
+                                 Glyph="&#xf15c;"
+                                 Color="White" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem Command="{Binding RefreshCommand}" Text="刷新">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="MDI"
+                                 Glyph="&#xf1b9;"
+                                 Color="White" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <RefreshView Command="{Binding RefreshCommand}"
+                 IsRefreshing="{Binding IsRefreshing}"
+                 RefreshColor="{AppThemeBinding Light={StaticResource Primary},
+                                                Dark={StaticResource White}}">
+        <CollectionView EmptyView="没有数据" ItemsSource="{Binding CurrentExams}">
+            <CollectionView.Resources>
+                <cvt:ExamColorConverter x:Key="ExamColor" />
+            </CollectionView.Resources>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="h:Exam">
+                    <Grid Margin="10,4">
+                        <Button BackgroundColor="{Binding Converter={StaticResource ExamColor}}" />
+                        <Grid Padding="10"
+                              ColumnDefinitions="*,Auto"
+                              InputTransparent="True"
+                              RowDefinitions="30,*,*">
+                            <Label Grid.Row="0"
+                                   Grid.Column="0"
+                                   FontAttributes="Bold"
+                                   FontSize="18"
+                                   Text="{Binding CourseName}"
+                                   TextColor="White" />
+                            <Label Grid.Row="0"
+                                   Grid.Column="1"
+                                   FontSize="16"
+                                   HorizontalTextAlignment="End"
+                                   Text="{Binding Type}"
+                                   TextColor="White" />
+                            <Label Grid.Row="1"
+                                   Grid.ColumnSpan="2"
+                                   Text="{Binding Time, StringFormat='时间：{0}'}"
+                                   TextColor="White" />
+                            <Label Grid.Row="2"
+                                   Grid.ColumnSpan="2"
+                                   Text="{Binding Location, StringFormat='地点：{0}'}"
+                                   TextColor="White" />
+                        </Grid>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
+</ContentPage>

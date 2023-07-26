@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="HrbustDoggy.Maui.Views.LoginPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:HrbustDoggy.Maui.ViewModels"
+             Title="登录"
+             x:DataType="vm:LoginViewModel">
+    <VerticalStackLayout Padding="20" Spacing="10">
+        <Entry Placeholder="学号" Text="{Binding Username}" />
+        <Entry IsPassword="True"
+               Placeholder="密码"
+               Text="{Binding Password}" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{OnIdiom Default=1*, Desktop=3*}" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Entry Grid.Column="0"
+                   Placeholder="验证码"
+                   Text="{Binding CaptchaCode}" />
+            <ImageButton Grid.Column="1"
+                         Aspect="AspectFit"
+                         Command="{Binding RefreshCaptchaCommand}"
+                         Source="{Binding CaptchaImage}" />
+        </Grid>
+        <HorizontalStackLayout>
+            <Label Text="记住密码" VerticalTextAlignment="Center" />
+            <CheckBox IsChecked="{Binding RememberPassword}" />
+        </HorizontalStackLayout>
+        <Button Command="{Binding LoginCommand}" Text="登录" />
+    </VerticalStackLayout>
+</ContentPage>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView x:Name="this"
+             x:Class="HrbustDoggy.Maui.Views.Controls.ClassGrid"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:cvt="clr-namespace:HrbustDoggy.Maui.Views.Converters">
+    <ContentView.Resources>
+        <cvt:TableDateConverter x:Key="DateConverter" />
+        <cvt:TableTimeConverter x:Key="TimeConverter" />
+        <cvt:NullInvisible x:Key="NullInvisible" />
+    </ContentView.Resources>
+    <Grid x:Name="PART_Grid" BindingContext="{x:Reference this}">
+        <Grid.Resources>
+            <Style TargetType="{x:Type VerticalStackLayout}">
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+            <Style x:Key="CenterLabelStyle" TargetType="{x:Type Label}">
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+            </Style>
+            <Style BasedOn="{StaticResource CenterLabelStyle}" TargetType="{x:Type Label}" />
+            <Style x:Key="TimeStyle"
+                   BasedOn="{StaticResource CenterLabelStyle}"
+                   TargetType="{x:Type Label}">
+                <Setter Property="Text">
+                    <Setter.Value>
+                        <MultiBinding Converter="{StaticResource TimeConverter}">
+                            <Binding Path="ClassTable.StartTimes" />
+                            <Binding Source="{RelativeSource Mode=FindAncestor, AncestorType={x:Type VerticalStackLayout}}" />
+                        </MultiBinding>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="IsVisible" Value="{Binding ClassTable, Converter={StaticResource NullInvisible}}" />
+            </Style>
+            <Style x:Key="DateStyle"
+                   BasedOn="{StaticResource CenterLabelStyle}"
+                   TargetType="{x:Type Label}">
+                <Setter Property="Text">
+                    <Setter.Value>
+                        <MultiBinding Converter="{StaticResource DateConverter}">
+                            <Binding Path="DateNow" />
+                            <Binding Path="ActualWeek" />
+                            <Binding Path="DisplayWeek" />
+                            <Binding Source="{RelativeSource Mode=FindAncestor, AncestorType={x:Type VerticalStackLayout}}" />
+                        </MultiBinding>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="IsVisible" Value="{Binding DateNow, Converter={StaticResource NullInvisible}}" />
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="{OnIdiom Default=0.5*, Desktop=0.8*}" />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{OnIdiom Default=1*, Desktop=0.5*}" />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Border x:Name="PART_Indicator"
+                Grid.Row="0"
+                Grid.RowSpan="7"
+                Grid.Column="1"
+                Background="{AppThemeBinding Light={StaticResource Accent},
+                                             Dark={StaticResource Gray600}}"
+                StrokeThickness="0" />
+
+        <VerticalStackLayout Grid.Row="1" Grid.Column="0">
+            <Label Style="{StaticResource TimeStyle}" />
+            <Label Text="第一节" />
+        </VerticalStackLayout>
+        <VerticalStackLayout Grid.Row="2" Grid.Column="0">
+            <Label Style="{StaticResource TimeStyle}" />
+            <Label Text="第二节" />
+        </VerticalStackLayout>
+        <VerticalStackLayout Grid.Row="3" Grid.Column="0">
+            <Label Style="{StaticResource TimeStyle}" />
+            <Label Text="第三节" />
+        </VerticalStackLayout>
+        <VerticalStackLayout Grid.Row="4" Grid.Column="0">
+            <Label Style="{StaticResource TimeStyle}" />
+            <Label Text="第四节" />
+        </VerticalStackLayout>
+        <VerticalStackLayout Grid.Row="5" Grid.Column="0">
+            <Label Style="{StaticResource TimeStyle}" />
+            <Label Text="第五节" />
+        </VerticalStackLayout>
+        <VerticalStackLayout Grid.Row="6" Grid.Column="0">
+            <Label Style="{StaticResource TimeStyle}" />
+            <Label Text="第六节" />
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Grid.Row="0" Grid.Column="1">
+            <Label Style="{StaticResource DateStyle}" />
+            <Label Text="周一" />
+        </VerticalStackLayout>
+        <VerticalStackLayout Grid.Row="0" Grid.Column="2">
+            <Label Style="{StaticResource DateStyle}" />
+            <Label Text="周二" />
+        </VerticalStackLayout>
+        <VerticalStackLayout Grid.Row="0" Grid.Column="3">
+            <Label Style="{StaticResource DateStyle}" />
+            <Label Text="周三" />
+        </VerticalStackLayout>
+        <VerticalStackLayout Grid.Row="0" Grid.Column="4">
+            <Label Style="{StaticResource DateStyle}" />
+            <Label Text="周四" />
+        </VerticalStackLayout>
+        <VerticalStackLayout Grid.Row="0" Grid.Column="5">
+            <Label Style="{StaticResource DateStyle}" />
+            <Label Text="周五" />
+        </VerticalStackLayout>
+        <VerticalStackLayout Grid.Row="0" Grid.Column="6">
+            <Label Style="{StaticResource DateStyle}" />
+            <Label Text="周六" />
+        </VerticalStackLayout>
+        <VerticalStackLayout Grid.Row="0" Grid.Column="7">
+            <Label Style="{StaticResource DateStyle}" />
+            <Label Text="周日" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentView>

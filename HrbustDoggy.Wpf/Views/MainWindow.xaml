@@ -1,0 +1,87 @@
+﻿<Window x:Class="HrbustDoggy.Wpf.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="clr-namespace:HrbustDoggy.Wpf.Views.Controls"
+        xmlns:cvt="clr-namespace:HrbustDoggy.Wpf.Views.Converters"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        xmlns:vm="clr-namespace:HrbustDoggy.Wpf.ViewModels"
+        Title="理工汪"
+        Width="900"
+        Height="500"
+        MinWidth="620"
+        MinHeight="420"
+        d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
+        Closed="Window_Closed"
+        Closing="Window_Closing"
+        Loaded="Window_Loaded"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d">
+    <Window.Resources>
+        <cvt:BoolInverter x:Key="BoolInverter" />
+    </Window.Resources>
+    <DockPanel x:Name="Panel"
+               IsEnabled="{Binding IsRefreshing, Converter={StaticResource BoolInverter}}"
+               LastChildFill="True">
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="程序(_U)">
+                <MenuItem Command="{Binding LoginCommand}" Header="登录(_I)" />
+                <MenuItem Command="{Binding LogoutCommand}" Header="注销(_O)" />
+                <Separator />
+                <MenuItem Click="Exit_Click" Header="退出(_Q)" />
+            </MenuItem>
+            <MenuItem Header="课表(_F)">
+                <MenuItem Command="{Binding RefreshCommand}" Header="刷新(_R)" />
+                <MenuItem Command="{Binding ImportCommand}" Header="导入(_I)" />
+                <MenuItem Command="{Binding ExportCommand}" Header="导出(_E)" />
+                <Separator />
+                <MenuItem Click="Exam_Click" Header="考试(_X)" />
+            </MenuItem>
+            <MenuItem Header="帮助(_H)">
+                <MenuItem Click="About_Click" Header="关于(_A)" />
+            </MenuItem>
+        </Menu>
+
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock Text="{Binding Now, StringFormat={}{0:D}, ConverterCulture='zh-Hans'}" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text="{Binding Status}" />
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Margin="0,0,20,0"
+                                Orientation="Horizontal"
+                                ToolTip="若勾选此项，则理工汪会保持后台运行">
+                        <CheckBox VerticalContentAlignment="Center"
+                                  Content="上课提醒："
+                                  IsChecked="{Binding IsNotificationEnabled}" />
+                        <c:IntegerUpDown IsEnabled="{Binding IsNotificationEnabled}"
+                                         Maximum="30"
+                                         Minimum="0"
+                                         Value="{Binding NotificationTimeAdvance}" />
+                        <TextBlock VerticalAlignment="Center" Text=" 分钟" />
+                    </StackPanel>
+                    <StackPanel IsEnabled="{Binding HasData}" Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Text="周数：" />
+                        <c:IntegerUpDown MinWidth="40"
+                                         Maximum="25"
+                                         Minimum="1"
+                                         Value="{Binding DisplayWeek}" />
+                        <Button Width="40"
+                                Command="{Binding DisplayActualWeekCommand}"
+                                Content="当前" />
+                    </StackPanel>
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
+
+        <c:ClassGrid ActualWeek="{Binding ActualWeek}"
+                     ClassTable="{Binding ClassTable}"
+                     DateNow="{Binding Now}"
+                     DisplayWeek="{Binding DisplayWeek}" />
+    </DockPanel>
+</Window>

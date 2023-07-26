@@ -1,0 +1,101 @@
+﻿<Window x:Class="HrbustDoggy.Wpf.Views.ExamsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:cvt="clr-namespace:HrbustDoggy.Wpf.Views.Converters"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:HrbustDoggy.Wpf.ViewModels"
+        Title="考试信息"
+        Height="400"
+        MinWidth="350"
+        MinHeight="145"
+        d:DataContext="{d:DesignInstance Type={x:Type vm:ExamViewModel}}"
+        Loaded="Window_Loaded"
+        SizeToContent="Width"
+        WindowStartupLocation="CenterOwner"
+        mc:Ignorable="d">
+    <Window.Resources>
+        <cvt:BoolInverter x:Key="BoolInverter" />
+    </Window.Resources>
+    <DockPanel IsEnabled="{Binding IsRefreshing, Converter={StaticResource BoolInverter}}" LastChildFill="True">
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Command="{Binding RefreshCommand}" Header="刷新(_R)" />
+            <MenuItem Header="显示过期条目(_S)"
+                      IsCheckable="True"
+                      IsChecked="{Binding ShowOutdated}" />
+        </Menu>
+        <ListView ItemsSource="{Binding CurrentExams}">
+            <ListView.Resources>
+                <cvt:ExamColorConverter x:Key="ExamColor" />
+            </ListView.Resources>
+            <ListView.Style>
+                <Style BasedOn="{StaticResource {x:Type ListBox}}" TargetType="{x:Type ListView}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Items.Count}" Value="0">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListView}">
+                                        <Border Padding="5">
+                                            <TextBlock Text="没有要显示的条目" TextAlignment="Center" />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.Style>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <Border Padding="2">
+                                    <ContentPresenter />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border Padding="10"
+                            Background="{Binding Converter={StaticResource ExamColor}}"
+                            CornerRadius="5">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30" />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock.Foreground>
+                                <SolidColorBrush Color="White" />
+                            </TextBlock.Foreground>
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="0"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Text="{Binding CourseName}" />
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="1"
+                                       FontSize="16"
+                                       Text="{Binding Type}"
+                                       TextAlignment="Right" />
+                            <TextBlock Grid.Row="1"
+                                       Grid.ColumnSpan="2"
+                                       Text="{Binding Time, StringFormat=时间：{0}}" />
+                            <TextBlock Grid.Row="2"
+                                       Grid.ColumnSpan="2"
+                                       Text="{Binding Location, StringFormat=地点：{0}}" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </DockPanel>
+</Window>

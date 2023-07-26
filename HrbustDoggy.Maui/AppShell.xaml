@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell x:Class="HrbustDoggy.Maui.AppShell"
+       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:HrbustDoggy.Maui"
+       xmlns:v="clr-namespace:HrbustDoggy.Maui.Views"
+       Shell.FlyoutBehavior="Disabled">
+    <TabBar>
+        <ShellContent Title="课程"
+                      ContentTemplate="{DataTemplate v:TablePage}"
+                      Icon="{FontImage FontFamily=MDI,
+                                       Glyph=&#xf326;}"
+                      Route="table" />
+        <ShellContent Title="考试"
+                      ContentTemplate="{DataTemplate v:ExamPage}"
+                      Icon="{FontImage FontFamily=MDI,
+                                       Glyph=&#xf267;}"
+                      Route="exam" />
+        <ShellContent Title="关于"
+                      ContentTemplate="{DataTemplate v:AboutPage}"
+                      Icon="{FontImage FontFamily=MDI,
+                                       Glyph=&#xf1f7;}"
+                      Route="about" />
+    </TabBar>
+</Shell>

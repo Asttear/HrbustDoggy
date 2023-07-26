@@ -1,0 +1,238 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="clr-namespace:HrbustDoggy.Wpf.Views.Controls"
+                    xmlns:cvt="clr-namespace:HrbustDoggy.Wpf.Views.Converters">
+    <Style TargetType="{x:Type c:IntegerUpDown}">
+        <Style.Resources>
+            <cvt:IntegerConverter x:Key="IntegerConverter" />
+        </Style.Resources>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type c:IntegerUpDown}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="18" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="PART_Input"
+                                 Grid.Row="0"
+                                 Grid.RowSpan="2"
+                                 Grid.Column="0"
+                                 HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                 VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                 Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Value, Converter={StaticResource IntegerConverter}}"
+                                 TextAlignment="Center" />
+                        <Button x:Name="PART_Increase"
+                                Grid.Row="0"
+                                Grid.Column="1">
+                            <Path Margin="1"
+                                  Data="M 0 20 L 35 -20 L 70 20 Z"
+                                  Fill="#FF202020"
+                                  Stretch="Uniform" />
+                        </Button>
+                        <Button x:Name="PART_Decrease"
+                                Grid.Row="1"
+                                Grid.Column="1">
+                            <Path Margin="1"
+                                  Data="M 0 0 L 35 40 L 70 0 Z"
+                                  Fill="#FF202020"
+                                  Stretch="Uniform" />
+                        </Button>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Width" Value="45" />
+        <Setter Property="Height" Value="20" />
+    </Style>
+    <Style TargetType="{x:Type c:ClassButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type c:ClassButton}">
+                    <Button x:Name="PART_Button"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding AccentColor}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Foreground="{TemplateBinding Foreground}">
+                        <Button.Template>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border Margin="1"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="5">
+                                    <ContentPresenter />
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Grid>
+                            <TextBlock x:Name="PART_Info"
+                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                       TextWrapping="Wrap" />
+                            <TextBlock x:Name="PART_Mark"
+                                       Margin="0,0,4,2"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Bottom"
+                                       Text="◢"
+                                       Visibility="Collapsed" />
+                        </Grid>
+                    </Button>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Visibility" Value="Hidden" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="Gray" />
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="LightGray" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="{x:Type c:ClassGrid}">
+        <Style.Resources>
+            <cvt:TableDateConverter x:Key="DateConverter" />
+            <cvt:TableTimeConverter x:Key="TimeConverter" />
+            <cvt:NullCollapser x:Key="NullCollapser" />
+        </Style.Resources>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type c:ClassGrid}">
+                    <Grid x:Name="PART_Grid">
+                        <Grid.Resources>
+                            <Style TargetType="{x:Type StackPanel}">
+                                <Setter Property="HorizontalAlignment" Value="Center" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                            </Style>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="HorizontalAlignment" Value="Center" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                            </Style>
+                            <Style x:Key="TimeStyle"
+                                   BasedOn="{StaticResource {x:Type TextBlock}}"
+                                   TargetType="{x:Type TextBlock}">
+                                <Setter Property="Text">
+                                    <Setter.Value>
+                                        <MultiBinding Converter="{StaticResource TimeConverter}">
+                                            <Binding Path="ClassTable.StartTimes" RelativeSource="{RelativeSource Mode=TemplatedParent}" />
+                                            <Binding Path="(Grid.Row)" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type StackPanel}}" />
+                                        </MultiBinding>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Visibility" Value="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ClassTable, Converter={StaticResource NullCollapser}}" />
+                            </Style>
+                            <Style x:Key="DateStyle"
+                                   BasedOn="{StaticResource {x:Type TextBlock}}"
+                                   TargetType="{x:Type TextBlock}">
+                                <Setter Property="Text">
+                                    <Setter.Value>
+                                        <MultiBinding Converter="{StaticResource DateConverter}">
+                                            <Binding Path="DateNow" RelativeSource="{RelativeSource Mode=TemplatedParent}" />
+                                            <Binding Path="ActualWeek" RelativeSource="{RelativeSource Mode=TemplatedParent}" />
+                                            <Binding Path="DisplayWeek" RelativeSource="{RelativeSource Mode=TemplatedParent}" />
+                                            <Binding Path="(Grid.Column)" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type StackPanel}}" />
+                                        </MultiBinding>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Visibility" Value="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DateNow, Converter={StaticResource NullCollapser}}" />
+                            </Style>
+                        </Grid.Resources>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.3*" MinHeight="30" />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.5*" MinWidth="45" />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="PART_Indicator"
+                                Grid.Row="0"
+                                Grid.RowSpan="7"
+                                Grid.Column="1"
+                                Background="#FFECB3"
+                                Visibility="Visible" />
+
+                        <StackPanel Grid.Row="1" Grid.Column="0">
+                            <TextBlock Style="{StaticResource TimeStyle}" />
+                            <TextBlock Text="第一节" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="0">
+                            <TextBlock Style="{StaticResource TimeStyle}" />
+                            <TextBlock Text="第二节" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Grid.Column="0">
+                            <TextBlock Style="{StaticResource TimeStyle}" />
+                            <TextBlock Text="第三节" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Grid.Column="0">
+                            <TextBlock Style="{StaticResource TimeStyle}" />
+                            <TextBlock Text="第四节" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="5" Grid.Column="0">
+                            <TextBlock Style="{StaticResource TimeStyle}" />
+                            <TextBlock Text="第五节" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="6" Grid.Column="0">
+                            <TextBlock Style="{StaticResource TimeStyle}" />
+                            <TextBlock Text="第六节" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="0" Grid.Column="1">
+                            <TextBlock Style="{StaticResource DateStyle}" />
+                            <TextBlock Text="周一" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2">
+                            <TextBlock Style="{StaticResource DateStyle}" />
+                            <TextBlock Text="周二" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="3">
+                            <TextBlock Style="{StaticResource DateStyle}" />
+                            <TextBlock Text="周三" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="4">
+                            <TextBlock Style="{StaticResource DateStyle}" />
+                            <TextBlock Text="周四" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="5">
+                            <TextBlock Style="{StaticResource DateStyle}" />
+                            <TextBlock Text="周五" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="6">
+                            <TextBlock Style="{StaticResource DateStyle}" />
+                            <TextBlock Text="周六" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="7">
+                            <TextBlock Style="{StaticResource DateStyle}" />
+                            <TextBlock Text="周日" />
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="Gray" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>

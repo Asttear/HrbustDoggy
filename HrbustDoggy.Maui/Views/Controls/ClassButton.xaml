@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView x:Name="this"
+             x:Class="HrbustDoggy.Maui.Views.Controls.ClassButton"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:c="clr-namespace:HrbustDoggy.Maui.Views.Controls"
+             IsVisible="false">
+    <Grid Margin="1" BindingContext="{x:Reference this}">
+        <Button x:Name="PART_Button"
+                Padding="0"
+                BackgroundColor="Gray" />
+        <VerticalStackLayout Padding="2"
+                             InputTransparent="True"
+                             Spacing="4"
+                             VerticalOptions="Center">
+            <Label x:Name="PART_Title"
+                   FontSize="{OnIdiom Default=12, Desktop=14}"
+                   HorizontalOptions="Fill"
+                   HorizontalTextAlignment="Center"
+                   LineBreakMode="TailTruncation"
+                   MaxLines="3"
+                   TextColor="{Binding TextColor}" />
+            <Label x:Name="PART_Location"
+                   FontSize="{OnIdiom Default=8, Desktop=10}"
+                   HorizontalOptions="Fill"
+                   HorizontalTextAlignment="Center"
+                   LineBreakMode="TailTruncation"
+                   MaxLines="2"
+                   TextColor="{Binding TextColor}" />
+        </VerticalStackLayout>
+        <Label x:Name="PART_Mark"
+               Margin="{OnIdiom Default='0,0,4,0', Desktop='0,0,8,4'}"
+               HorizontalOptions="End"
+               InputTransparent="True"
+               Text="◢"
+               TextColor="{Binding TextColor}"
+               VerticalOptions="End" />
+        <RoundRectangle x:Name="PART_Accent"
+                        CornerRadius="5"
+                        InputTransparent="True"
+                        Stroke="{Binding AccentColor}"
+                        StrokeThickness="3" />
+    </Grid>
+</ContentView>
