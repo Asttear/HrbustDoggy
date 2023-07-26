@@ -71,7 +71,7 @@ async Task<bool> LoginAsync(string username, string password)
         switch (result)
         {
             case LoginResult.Success:
-                Console.WriteLine("登陆成功！");
+                Console.WriteLine("登录成功！");
                 await Task.Delay(1000);
                 return true;
             case LoginResult.CaptchaError:
