@@ -109,15 +109,15 @@ async Task PrintClassTableAsync()
                 var courses = table[day, i].Where(c => c.CheckIfScheduled(week));
                 if (courses.Any())
                 {
-                    var course = courses.First();
-                    Console.WriteLine(course.Title);
-                    Console.WriteLine(course.Location);
-                    Console.WriteLine(course.Teacher);
-                    Console.WriteLine(course.Schedule);
-                    foreach (var str in course.Description)
-                    {
-                        Console.WriteLine(str);
-                    }
+                    IEnumerable<string> courseInfos = courses.Select(c =>
+                        $"""
+                         课程：{c.Title}
+                         地点：{c.Location}
+                         教师：{c.Teacher}
+                         排课：{c.Schedule.RawText}
+                         其他：{string.Join('\n', c.Description)}
+                         """);
+                    Console.WriteLine(string.Join("\n\n", courseInfos));
                 }
                 else
                 {
@@ -129,6 +129,7 @@ async Task PrintClassTableAsync()
         Console.WriteLine("""
             1) 后一天
             2) 前一天
+            3）今天
             0) 返回
             """);
         int input;
@@ -153,6 +154,10 @@ async Task PrintClassTableAsync()
                 {
                     week--;
                 }
+                break;
+            case 3:
+                date = DateOnly.FromDateTime(DateTime.Now);
+                week = table.GetWeek(date) ?? 0;
                 break;
             default:
                 break;
