@@ -35,6 +35,7 @@ public static class MauiProgram
         // Viewmodels
         builder.Services.AddTransient<TableViewModel>();
         builder.Services.AddTransient<ExamViewModel>();
+        builder.Services.AddTransient<AboutViewModel>();
         builder.Services.AddTransient<LoginViewModel>();
 
         AllowMultiLineTruncation();

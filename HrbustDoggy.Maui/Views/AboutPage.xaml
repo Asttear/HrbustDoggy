@@ -2,13 +2,28 @@
 <ContentPage x:Class="HrbustDoggy.Maui.Views.AboutPage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:HrbustDoggy.Maui.ViewModels"
              Title="关于汪汪"
-             Loaded="ContentPage_Loaded">
+             x:DataType="vm:AboutViewModel">
     <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
         <ImageButton HeightRequest="200" Source="dog.png" />
-        <Label x:Name="info" HorizontalOptions="Center" />
+        <Label HorizontalOptions="Center" Text="{Binding InfoText}" />
+        <HorizontalStackLayout HorizontalOptions="Center">
+            <HorizontalStackLayout.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding OpenHomePageCommand}" />
+            </HorizontalStackLayout.GestureRecognizers>
+            <Image Margin="0,0,2,0"
+                   Source="{FontImage FontFamily=MDI,
+                                      Color={StaticResource Primary},
+                                      Glyph=&#xf345;}"
+                   WidthRequest="16" />
+            <Label Text="项目主页"
+                   TextColor="{StaticResource Primary}"
+                   TextDecorations="Underline" />
+        </HorizontalStackLayout>
         <Button Margin="0,10,0,0"
-                Clicked="Button_Clicked"
+                Command="{Binding WoofCommand}"
+                CommandParameter="{Binding Source={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContentPage}}}"
                 Text="汪汪"
                 WidthRequest="100" />
     </VerticalStackLayout>
