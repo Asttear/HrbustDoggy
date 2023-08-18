@@ -94,7 +94,7 @@ async Task PrintClassTableAsync()
     while (true)
     {
         Console.Clear();
-        Console.WriteLine($"{date:yyyy年MM月dd日，ddd}，第{week}周");
+        Console.WriteLine($"{date:yyyy年MM月dd日，ddd}，{(week > 0 ? $"第{week}周" : "未开学")}");
         int day = ((int)date.DayOfWeek + 6) % 7;
         int classesPerDay = (int)table.Style;
         for (int i = 0; i < classesPerDay; i++)
