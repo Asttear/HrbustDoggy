@@ -14,7 +14,7 @@ public class IntegerUpDown : Control
 
     public static readonly DependencyProperty ValueProperty =
         DependencyProperty.Register(nameof(Value), typeof(int), typeof(IntegerUpDown),
-            new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnValueChanged, CoerceValue));
+            new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnValueChanged));
 
     private readonly RelayCommand _increaseCommand;
 
@@ -84,22 +84,22 @@ public class IntegerUpDown : Control
         DecreasePart = GetTemplateChild("PART_Decrease") as Button;
     }
 
-    private static object CoerceValue(DependencyObject d, object baseValue)
-    {
-        if (d is not IntegerUpDown control || baseValue is not int value)
-        {
-            return DependencyProperty.UnsetValue;
-        }
-        if (value > control.Maximum)
-        {
-            return control.Maximum;
-        }
-        else if (value < control.Minimum)
-        {
-            return control.Minimum;
-        }
-        return value;
-    }
+    //private static object CoerceValue(DependencyObject d, object baseValue)
+    //{
+    //    if (d is not IntegerUpDown control || baseValue is not int value)
+    //    {
+    //        return DependencyProperty.UnsetValue;
+    //    }
+    //    if (value > control.Maximum)
+    //    {
+    //        return control.Maximum;
+    //    }
+    //    else if (value < control.Minimum)
+    //    {
+    //        return control.Minimum;
+    //    }
+    //    return value;
+    //}
 
     private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {

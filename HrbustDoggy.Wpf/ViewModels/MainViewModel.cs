@@ -159,7 +159,7 @@ public partial class MainViewModel : ObservableObject
             Status = "正在刷新课表……";
             ClassTable = await _client.GetClassTableAsync();
             DisplayWeek = ActualWeek;
-            Status = $"第{ActualWeek}周";
+            Status = ActualWeek > 0 ? $"第{ActualWeek}周" : "未开学";
             _notification.ClassTable = ClassTable;
             SaveFile(DefaultFileName);
             IsRefreshing = false;
@@ -237,7 +237,7 @@ public partial class MainViewModel : ObservableObject
     {
         ClassTable = _dataHelper.LoadClassTable(path);
         DisplayWeek = ActualWeek;
-        Status = $"第{ActualWeek}周";
+        Status = ActualWeek > 0 ? $"第{ActualWeek}周" : "未开学";
         _notification.ClassTable = ClassTable;
     }
 
