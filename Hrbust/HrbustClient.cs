@@ -17,7 +17,7 @@ public class HrbustClient
     private const string SecurityCheckUrl = "j_acegi_security_check";
     private const string StudentInfoUrl = "student/studentinfo/studentInfoModifyIndex.do?frombase=0&wantTag=0";
 
-    private static readonly string[] s_strTimes = new string[] { "08:00", "09:50", "13:30", "15:30", "18:10", "19:50" };
+    private static readonly string[] s_strTimes = { "08:00", "09:50", "13:30", "15:30", "18:10", "19:50" };
 
     /// <summary>
     /// 客户端构造函数。
@@ -257,13 +257,19 @@ public class HrbustClient
         Stream response = await HttpClient.GetStreamAsync(StudentInfoUrl);
         HtmlDocument html = new();
         html.Load(response, Encoding.GetEncoding("UTF-8"));
-        string grade = html.DocumentNode.SelectSingleNode("//*[@id='gradeChange']").InnerText;
-        int gradeYear = Convert.ToInt32(grade[0..4]);
+        int gradeYear = Convert.ToInt32(html.DocumentNode.SelectSingleNode("//*[@id='gradeChange']").InnerText[0..4]);
         DateTime now = DateTime.Now;
         int semester = now.Month < 8 ? 0 : 1;
+        int grade = now.Year - gradeYear + semester;
+        int offset = grade switch
+        {
+            1 => 0,
+            2 => 5,
+            _ => 10
+        };
         List<TimeOnly> times = s_strTimes.Select(TimeOnly.Parse)
-                                     .Select(t => t.AddMinutes(5 * (now.Year - gradeYear - 1 + semester)))
-                                     .ToList();
+                                         .Select(t => t.AddMinutes(offset))
+                                         .ToList();
         return times;
     }
 
