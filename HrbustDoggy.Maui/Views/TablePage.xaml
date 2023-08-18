@@ -3,14 +3,18 @@
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:c="clr-namespace:HrbustDoggy.Maui.Views.Controls"
+             xmlns:cvt="clr-namespace:HrbustDoggy.Maui.Views.Converters"
              xmlns:vm="clr-namespace:HrbustDoggy.Maui.ViewModels"
              x:DataType="vm:TableViewModel"
              Loaded="ContentPage_Loaded">
+    <ContentPage.Resources>
+        <cvt:TableTitleConverter x:Key="TitleConverter" />
+    </ContentPage.Resources>
     <ContentPage.Triggers>
         <DataTrigger Binding="{Binding HasData}"
                      TargetType="ContentPage"
                      Value="True">
-            <Setter Property="Title" Value="{Binding DisplayWeek, StringFormat='第{0}周'}" />
+            <Setter Property="Title" Value="{Binding DisplayWeek, Converter={StaticResource TitleConverter}}" />
         </DataTrigger>
         <DataTrigger Binding="{Binding HasData}"
                      TargetType="ContentPage"
