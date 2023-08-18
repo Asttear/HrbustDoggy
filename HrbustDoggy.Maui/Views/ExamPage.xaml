@@ -27,39 +27,31 @@
     <RefreshView Command="{Binding RefreshCommand}"
                  IsRefreshing="{Binding IsRefreshing}"
                  RefreshColor="{StaticResource Primary}">
-        <CollectionView EmptyView="没有数据" ItemsSource="{Binding CurrentExams}">
+        <CollectionView EmptyView="没有数据"
+                        ItemSizingStrategy="MeasureFirstItem"
+                        ItemsSource="{Binding CurrentExams}">
             <CollectionView.Resources>
                 <cvt:ExamColorConverter x:Key="ExamColor" />
             </CollectionView.Resources>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="h:Exam">
-                    <Grid Margin="10,4">
+                    <Grid Margin="8,4">
                         <Button BackgroundColor="{Binding Converter={StaticResource ExamColor}}" />
-                        <Grid Padding="10"
-                              ColumnDefinitions="*,Auto"
-                              InputTransparent="True"
-                              RowDefinitions="30,*,*">
-                            <Label Grid.Row="0"
-                                   Grid.Column="0"
-                                   FontAttributes="Bold"
-                                   FontSize="18"
-                                   Text="{Binding CourseName}"
-                                   TextColor="White" />
-                            <Label Grid.Row="0"
-                                   Grid.Column="1"
-                                   FontSize="16"
-                                   HorizontalTextAlignment="End"
-                                   Text="{Binding Type}"
-                                   TextColor="White" />
-                            <Label Grid.Row="1"
-                                   Grid.ColumnSpan="2"
-                                   Text="{Binding Time, StringFormat='时间：{0}'}"
-                                   TextColor="White" />
-                            <Label Grid.Row="2"
-                                   Grid.ColumnSpan="2"
-                                   Text="{Binding Location, StringFormat='地点：{0}'}"
-                                   TextColor="White" />
-                        </Grid>
+                        <VerticalStackLayout Padding="10" InputTransparent="True">
+                            <Grid Margin="0,0,0,6" ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0"
+                                       FontAttributes="Bold"
+                                       FontSize="18"
+                                       Text="{Binding CourseName}"
+                                       TextColor="White" />
+                                <Label Grid.Column="1"
+                                       FontSize="16"
+                                       Text="{Binding Type}"
+                                       TextColor="White" />
+                            </Grid>
+                            <Label Text="{Binding Time, StringFormat='时间：{0}'}" TextColor="White" />
+                            <Label Text="{Binding Location, StringFormat='地点：{0}'}" TextColor="White" />
+                        </VerticalStackLayout>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
