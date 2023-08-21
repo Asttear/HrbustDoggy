@@ -10,18 +10,12 @@
     <ContentPage.Resources>
         <cvt:TableTitleConverter x:Key="TitleConverter" />
     </ContentPage.Resources>
-    <ContentPage.Triggers>
-        <DataTrigger Binding="{Binding HasData}"
-                     TargetType="ContentPage"
-                     Value="True">
-            <Setter Property="Title" Value="{Binding DisplayWeek, Converter={StaticResource TitleConverter}}" />
-        </DataTrigger>
-        <DataTrigger Binding="{Binding HasData}"
-                     TargetType="ContentPage"
-                     Value="False">
-            <Setter Property="Title" Value="未载入" />
-        </DataTrigger>
-    </ContentPage.Triggers>
+    <ContentPage.Title>
+        <MultiBinding Converter="{StaticResource TitleConverter}">
+            <Binding Path="ClassTable" />
+            <Binding Path="DisplayWeek" />
+        </MultiBinding>
+    </ContentPage.Title>
     <ContentPage.ToolbarItems>
         <ToolbarItem Command="{Binding RefreshCommand}" Text="刷新">
             <ToolbarItem.IconImageSource>
@@ -35,7 +29,7 @@
                  IsRefreshing="{Binding IsRefreshing}"
                  RefreshColor="{StaticResource Primary}">
         <ScrollView>
-            <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,32">
+            <Grid RowDefinitions="*,Auto">
                 <Grid.GestureRecognizers>
                     <SwipeGestureRecognizer Direction="Left"
                                             Swiped="SwipeGestureRecognizer_Swiped"
@@ -45,31 +39,46 @@
                                             Threshold="20" />
                 </Grid.GestureRecognizers>
                 <c:ClassGrid Grid.Row="0"
-                             Grid.ColumnSpan="2"
                              ActualWeek="{Binding ActualWeek}"
                              ClassTable="{Binding ClassTable}"
                              DateNow="{Binding Now}"
                              DisplayWeek="{Binding DisplayWeek}" />
-                <Slider Grid.Row="1"
-                        Grid.Column="0"
-                        Margin="5,0"
-                        IsEnabled="{Binding HasData}"
-                        Maximum="25"
-                        MaximumWidthRequest="500"
-                        Minimum="1"
-                        Value="{Binding DisplayWeek}" />
-                <ImageButton Grid.Row="1"
-                             Grid.Column="1"
-                             Margin="5,0"
-                             Padding="10,0"
-                             Command="{Binding DisplayActualWeekCommand}">
-                    <ImageButton.Source>
-                        <FontImageSource FontFamily="MDI"
-                                         Glyph="&#xf299;"
-                                         Color="{AppThemeBinding Light={StaticResource Primary},
-                                                                 Dark={StaticResource White}}" />
-                    </ImageButton.Source>
-                </ImageButton>
+                <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                    <!-- See https://github.com/dotnet/maui/issues/5287
+                    <Grid.Triggers>
+                        <DataTrigger Binding="{Binding ActualWeek}"
+                                     TargetType="View"
+                                     Value="0">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                    </Grid.Triggers>
+                    -->
+                    <Slider Grid.Column="0"
+                            Margin="5,0"
+                            Maximum="25"
+                            MaximumWidthRequest="500"
+                            Minimum="1"
+                            Value="{Binding DisplayWeek}">
+                        <Slider.Triggers>
+                            <DataTrigger Binding="{Binding ActualWeek}"
+                                         TargetType="View"
+                                         Value="0">
+                                <Setter Property="IsEnabled" Value="False" />
+                            </DataTrigger>
+                        </Slider.Triggers>
+                    </Slider>
+                    <ImageButton Grid.Column="1"
+                                 Margin="5,0"
+                                 Padding="10,0"
+                                 Command="{Binding DisplayActualWeekCommand}">
+                        <ImageButton.Source>
+                            <FontImageSource FontFamily="MDI"
+                                             Glyph="&#xf299;"
+                                             Color="{AppThemeBinding Light={StaticResource Primary},
+                                                                     Dark={StaticResource White}}" />
+                        </ImageButton.Source>
+                    </ImageButton>
+                </Grid>
             </Grid>
         </ScrollView>
     </RefreshView>

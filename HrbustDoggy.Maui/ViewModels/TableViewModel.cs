@@ -15,7 +15,6 @@ public partial class TableViewModel : ObservableObject, IQueryAttributable
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ActualWeek))]
-    [NotifyPropertyChangedFor(nameof(HasData))]
     private ClassTable? _classTable;
 
     [ObservableProperty]
@@ -37,14 +36,15 @@ public partial class TableViewModel : ObservableObject, IQueryAttributable
     }
 
     public int ActualWeek => ClassTable?.GetWeek(DateOnly.FromDateTime(DateTime.Now)) ?? 0;
-    public bool HasData => ClassTable is not null;
+
+    private bool HasClassTable => ClassTable is not null;
     private bool CanRefresh => !IsRefreshing;
     private bool CanDisplayActualWeek => DisplayWeek != ActualWeek;
 
     [RelayCommand]
     public async Task PrepareDataAsync()
     {
-        if (HasData)
+        if (HasClassTable)
         {
             return;
         }
@@ -53,6 +53,13 @@ public partial class TableViewModel : ObservableObject, IQueryAttributable
             try
             {
                 LoadFile(_defaultPath);
+                if (ActualWeek == 0 && ClassTable?.DateWhenObtained != DateOnly.FromDateTime(Now))
+                {
+                    if (await Shell.Current.DisplayAlert("提示", "课表可能存在变动，是否立即刷新？", "确定", "取消"))
+                    {
+                        await RefreshAsync();
+                    }
+                }
                 return;
             }
             catch (Exception e)

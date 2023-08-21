@@ -7,7 +7,7 @@
     <ContentView.Resources>
         <cvt:TableDateConverter x:Key="DateConverter" />
         <cvt:TableTimeConverter x:Key="TimeConverter" />
-        <cvt:NullInvisibility x:Key="NullInvisibility" />
+        <cvt:NullToFalseConverter x:Key="NullToFalse" />
     </ContentView.Resources>
     <Grid x:Name="PART_Grid" BindingContext="{x:Reference this}">
         <Grid.Resources>
@@ -32,7 +32,7 @@
                         </MultiBinding>
                     </Setter.Value>
                 </Setter>
-                <Setter Property="IsVisible" Value="{Binding ClassTable, Converter={StaticResource NullInvisibility}}" />
+                <Setter Property="IsVisible" Value="{Binding ClassTable, Converter={StaticResource NullToFalse}}" />
             </Style>
             <Style x:Key="DateStyle"
                    BasedOn="{StaticResource CenterLabelStyle}"
@@ -47,7 +47,7 @@
                         </MultiBinding>
                     </Setter.Value>
                 </Setter>
-                <Setter Property="IsVisible" Value="{Binding DateNow, Converter={StaticResource NullInvisibility}}" />
+                <Setter Property="IsVisible" Value="{Binding DateNow, Converter={StaticResource NullToFalse}}" />
             </Style>
         </Grid.Resources>
         <Grid.RowDefinitions>

@@ -19,6 +19,10 @@ public partial class TablePage : ContentPage
 
     private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
     {
+        if (_viewModel.ActualWeek == 0)
+        {
+            return;
+        }
         switch (e.Direction)
         {
             case SwipeDirection.Right:

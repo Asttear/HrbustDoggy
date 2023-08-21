@@ -2,7 +2,7 @@
 
 namespace HrbustDoggy.Maui.Views.Converters;
 
-internal class NullInvisibility : IValueConverter
+internal class NullToFalseConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
