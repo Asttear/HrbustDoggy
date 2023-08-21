@@ -17,7 +17,14 @@ public class HrbustClient
     private const string SecurityCheckUrl = "j_acegi_security_check";
     private const string StudentInfoUrl = "student/studentinfo/studentInfoModifyIndex.do?frombase=0&wantTag=0";
 
-    private static readonly string[] s_strTimes = { "08:00", "09:50", "13:30", "15:30", "18:10", "19:50" };
+    // TODO: 不使用硬编码时间
+    private static readonly string[][] s_strTimes =
+    {
+        new[] { "08:00", "09:50", "13:30", "15:30", "18:10", "19:50" },
+        new[] { "08:05", "10:10", "13:35", "15:45", "18:15", "19:55" },
+        new[] { "08:10", "10:30", "13:40", "16:00", "18:20", "20:00" },
+        new[] { "08:10", "10:30", "13:40", "16:00", "18:20", "20:00" },
+    };
 
     /// <summary>
     /// 客户端构造函数。
@@ -261,15 +268,7 @@ public class HrbustClient
         DateTime now = DateTime.Now;
         int semester = now.Month < 8 ? 0 : 1;
         int grade = now.Year - gradeYear + semester;
-        int offset = grade switch
-        {
-            1 => 0,
-            2 => 5,
-            _ => 10
-        };
-        List<TimeOnly> times = s_strTimes.Select(TimeOnly.Parse)
-                                         .Select(t => t.AddMinutes(offset))
-                                         .ToList();
+        List<TimeOnly> times = s_strTimes[grade - 1].Select(TimeOnly.Parse).ToList();
         return times;
     }
 
