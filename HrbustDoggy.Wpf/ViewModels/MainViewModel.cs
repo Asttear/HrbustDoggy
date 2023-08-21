@@ -25,7 +25,6 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ExportCommand))]
     [NotifyPropertyChangedFor(nameof(ActualWeek))]
-    [NotifyPropertyChangedFor(nameof(HasData))]
     private ClassTable? _classTable;
 
     [ObservableProperty]
@@ -60,8 +59,6 @@ public partial class MainViewModel : ObservableObject
 
     public int ActualWeek => ClassTable?.GetWeek(DateOnly.FromDateTime(DateTime.Now)) ?? 0;
 
-    public bool HasData => ClassTable is not null;
-
     public bool IsNotificationEnabled
     {
         get => _notification.IsEnabled;
@@ -84,16 +81,15 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    private bool HasClassTable => ClassTable is not null;
     private bool CanLogin => !IsLoggedIn;
-
     private bool CanRefresh => !IsRefreshing;
-
     private bool CanDisplayActualWeek => DisplayWeek != ActualWeek;
 
     [RelayCommand]
     public async Task PrepareDataAsync()
     {
-        if (HasData)
+        if (HasClassTable)
         {
             return;
         }
@@ -102,6 +98,14 @@ public partial class MainViewModel : ObservableObject
             try
             {
                 LoadFile(DefaultFileName);
+                if (ActualWeek == 0 && ClassTable?.DateWhenObtained != DateOnly.FromDateTime(Now))
+                {
+                    MessageBoxResult result = MessageBox.Show("课表可能存在变动，是否立即刷新？", "提示", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.OK)
+                    {
+                        await RefreshAsync();
+                    }
+                }
                 return;
             }
             catch (Exception e)
@@ -197,7 +201,7 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    [RelayCommand(CanExecute = nameof(HasData))]
+    [RelayCommand(CanExecute = nameof(HasClassTable))]
     public void Export()
     {
         SaveFileDialog dialog = new()

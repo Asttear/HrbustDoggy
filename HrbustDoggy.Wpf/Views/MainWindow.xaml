@@ -65,7 +65,16 @@
                                          Value="{Binding NotificationTimeAdvance}" />
                         <TextBlock VerticalAlignment="Center" Text=" 分钟" />
                     </StackPanel>
-                    <StackPanel IsEnabled="{Binding HasData}" Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=ActualWeek}" Value="0">
+                                        <Setter Property="IsEnabled" Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
                         <TextBlock VerticalAlignment="Center" Text="周数：" />
                         <c:IntegerUpDown MinWidth="40"
                                          Maximum="25"
