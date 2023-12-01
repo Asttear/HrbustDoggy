@@ -4,7 +4,7 @@ namespace HrbustDoggy.Maui.Views.Converters;
 
 internal class NullToFalseConverter : IValueConverter
 {
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (targetType != typeof(bool))
         {
@@ -13,7 +13,7 @@ internal class NullToFalseConverter : IValueConverter
         return value is not null;
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         throw new NotImplementedException();
     }
