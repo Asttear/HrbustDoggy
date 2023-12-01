@@ -3,6 +3,7 @@ using HrbustDoggy.Maui.Services;
 using HrbustDoggy.Maui.ViewModels;
 using HrbustDoggy.Maui.Views;
 using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Handlers;
 using Plugin.Maui.Audio;
 
 namespace HrbustDoggy.Maui;
@@ -51,7 +52,7 @@ public static class MauiProgram
     private static void AllowMultiLineTruncation()
     {
         // See https://github.com/dotnet/maui/discussions/5492
-        static void UpdateMaxLines(Microsoft.Maui.Handlers.LabelHandler handler, ILabel label)
+        static void UpdateMaxLines(ILabelHandler handler, ILabel label)
         {
 #if ANDROID
             var textView = handler.PlatformView;
@@ -63,8 +64,7 @@ public static class MauiProgram
             }
 #endif
         };
-
-        Label.ControlsLabelMapper.AppendToMapping(nameof(Label.LineBreakMode), UpdateMaxLines);
-        Label.ControlsLabelMapper.AppendToMapping(nameof(Label.MaxLines), UpdateMaxLines);
+        LabelHandler.Mapper.AppendToMapping(nameof(Label.LineBreakMode), UpdateMaxLines);
+        LabelHandler.Mapper.AppendToMapping(nameof(Label.MaxLines), UpdateMaxLines);
     }
 }
