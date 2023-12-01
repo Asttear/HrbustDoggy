@@ -9,6 +9,7 @@
              Loaded="ContentPage_Loaded">
     <ContentPage.Resources>
         <cvt:TableTitleConverter x:Key="TitleConverter" />
+        <cvt:SliderStateConverter x:Key="SliderStateConverter" />
     </ContentPage.Resources>
     <ContentPage.Title>
         <MultiBinding Converter="{StaticResource TitleConverter}">
@@ -25,6 +26,7 @@
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
     </ContentPage.ToolbarItems>
+    <!-- See https://github.com/dotnet/maui/issues/18987 -->
     <RefreshView Command="{Binding RefreshCommand}"
                  IsRefreshing="{Binding IsRefreshing}"
                  RefreshColor="{StaticResource Primary}">
@@ -58,7 +60,9 @@
                             Maximum="25"
                             MaximumWidthRequest="500"
                             Minimum="1"
+                            IsEnabled="{Binding ActualWeek, Converter={StaticResource SliderStateConverter}}"
                             Value="{Binding DisplayWeek}">
+                        <!-- See https://github.com/dotnet/maui/issues/18976
                         <Slider.Triggers>
                             <DataTrigger Binding="{Binding ActualWeek}"
                                          TargetType="View"
@@ -66,6 +70,7 @@
                                 <Setter Property="IsEnabled" Value="False" />
                             </DataTrigger>
                         </Slider.Triggers>
+                         -->
                     </Slider>
                     <ImageButton Grid.Column="1"
                                  Margin="5,0"
