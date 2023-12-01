@@ -2,6 +2,7 @@
 using HrbustDoggy.Maui.Services;
 using HrbustDoggy.Maui.ViewModels;
 using HrbustDoggy.Maui.Views;
+using Microsoft.Extensions.Logging;
 using Plugin.Maui.Audio;
 
 namespace HrbustDoggy.Maui;
@@ -39,6 +40,10 @@ public static class MauiProgram
         builder.Services.AddTransient<LoginViewModel>();
 
         AllowMultiLineTruncation();
+
+#if DEBUG
+        builder.Logging.AddDebug();
+#endif
 
         return builder.Build();
     }
