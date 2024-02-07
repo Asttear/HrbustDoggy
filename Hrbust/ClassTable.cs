@@ -1,24 +1,13 @@
-﻿using Hrbust.Extensions;
-using System.Collections;
-using System.Xml;
-using System.Xml.Schema;
-using System.Xml.Serialization;
+﻿using System.Collections;
 
 namespace Hrbust;
 
 /// <summary>
 /// 表示课程表。
 /// </summary>
-public class ClassTable : IEnumerable<Class>, IXmlSerializable
+public class ClassTable : IEnumerable<Class>
 {
-    private static readonly string[] s_days = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
-    private Class[,] _classes;
-
-    private ClassTable()
-    {
-        _classes = null!;
-        StartTimes = null!;
-    }
+    private readonly Class[,] _classes;
 
     /// <summary>
     /// 构造课程表。
@@ -40,7 +29,7 @@ public class ClassTable : IEnumerable<Class>, IXmlSerializable
         {
             for (int j = 0; j < length; j++)
             {
-                _classes[i, j] = new();
+                _classes[i, j] = [];
             }
         }
     }
@@ -133,81 +122,4 @@ public class ClassTable : IEnumerable<Class>, IXmlSerializable
     public IEnumerator<Class> GetEnumerator() => _classes.Cast<Class>().GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => _classes.GetEnumerator();
-
-    public XmlSchema? GetSchema()
-    {
-        return null;
-    }
-
-    public void ReadXml(XmlReader reader)
-    {
-        string? style = reader.GetAttribute("Style"),
-            duration = reader.GetAttribute("Duration"),
-            date = reader.GetAttribute("Date"),
-            week = reader.GetAttribute("Week");
-        if (style is null || duration is null || date is null || week is null)
-        {
-            throw new XmlException("Missing attributes of ClassTable!", null);
-        }
-
-        Style = Enum.Parse<ClassTableStyle>(style);
-        DurationOfEachClass = TimeSpan.FromMinutes(int.Parse(duration));
-        DateWhenObtained = DateOnly.Parse(date);
-        WeekWhenObtained = string.IsNullOrEmpty(week) ? null : int.Parse(week);
-        _classes = new Class[7, NumberOfClassesPerDay];
-
-        for (int i = 0; i < 7; i++)
-        {
-            for (int j = 0; j < NumberOfClassesPerDay; j++)
-            {
-                this[i, j] = new();
-            }
-        }
-
-        reader.ReadStartElement("ClassTable");
-        StartTimes = reader.ReadElementAsStartTimes().ToArray();
-        for (int i = 0; i < 7; i++)
-        {
-            reader.ReadStartElement(s_days[i]);
-            for (int j = 0; j < NumberOfClassesPerDay; j++)
-            {
-                if (reader.IsEmptyElement)
-                {
-                    reader.Read();
-                    continue;
-                }
-                reader.ReadStartElement("Class");
-                while (reader.IsStartElement("Course"))
-                {
-                    this[i, j].Add(reader.ReadElementAsCourse());
-                }
-                reader.ReadEndElement();
-            }
-            reader.ReadEndElement();
-        }
-        reader.ReadEndElement();
-    }
-
-    public void WriteXml(XmlWriter writer)
-    {
-        writer.WriteAttributeString("Style", Style.ToString());
-        writer.WriteAttributeString("Duration", DurationOfEachClass.TotalMinutes.ToString());
-        writer.WriteAttributeString("Date", DateWhenObtained.ToShortDateString());
-        writer.WriteAttributeString("Week", WeekWhenObtained.ToString());
-        writer.WriteElementStartTimes(StartTimes);
-        for (int i = 0; i < 7; i++)
-        {
-            writer.WriteStartElement(s_days[i]);
-            for (int j = 0; j < NumberOfClassesPerDay; j++)
-            {
-                writer.WriteStartElement("Class");
-                foreach (Course course in this[i, j])
-                {
-                    writer.WriteElementCourse(course);
-                }
-                writer.WriteEndElement();
-            }
-            writer.WriteEndElement();
-        }
-    }
 }
