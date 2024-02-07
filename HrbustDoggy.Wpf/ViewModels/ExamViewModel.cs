@@ -13,8 +13,6 @@ namespace HrbustDoggy.Wpf.ViewModels;
 
 public partial class ExamViewModel : ObservableObject
 {
-    private const string DefaultFileName = "Exams.xml";
-
     private readonly HrbustClient _client;
     private readonly DataHelper _dataHelper;
 
@@ -55,11 +53,11 @@ public partial class ExamViewModel : ObservableObject
         {
             return;
         }
-        if (File.Exists(DefaultFileName))
+        if (DataHelper.FileExist())
         {
             try
             {
-                LoadFile(DefaultFileName);
+                LoadFile();
                 return;
             }
             catch (Exception e)
@@ -82,7 +80,7 @@ public partial class ExamViewModel : ObservableObject
         try
         {
             Exams = await _client.GetExamsAsync();
-            SaveFile(DefaultFileName);
+            SaveFile();
             IsRefreshing = false;
             MessageBox.Show("考试信息刷新成功！", "消息", MessageBoxButton.OK, MessageBoxImage.Information);
         }
@@ -95,7 +93,15 @@ public partial class ExamViewModel : ObservableObject
 
     private static void ShowException(Exception e) => MessageBox.Show($"出现异常：\n{e.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
 
-    private void LoadFile(string path) => Exams = _dataHelper.LoadExams(path);
+    private void LoadFile()
+    {
+        _dataHelper.Load();
+        Exams = _dataHelper.Exams;
+    }
 
-    private void SaveFile(string path) => _dataHelper.SaveExams(path, Exams);
+    private void SaveFile()
+    {
+        _dataHelper.Exams = Exams;
+        _dataHelper.Save();
+    }
 }

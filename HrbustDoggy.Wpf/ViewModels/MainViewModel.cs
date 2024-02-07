@@ -15,8 +15,6 @@ namespace HrbustDoggy.Wpf.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {
-    private const string DefaultFileName = "ClassData.xml";
-
     private readonly HrbustClient _client;
     private readonly DataHelper _dataHelper;
     private readonly ClassNotification _notification;
@@ -93,11 +91,11 @@ public partial class MainViewModel : ObservableObject
         {
             return;
         }
-        if (File.Exists(DefaultFileName))
+        if (DataHelper.FileExist())
         {
             try
             {
-                LoadFile(DefaultFileName);
+                LoadFile();
                 if (ActualWeek == 0 && ClassTable?.DateWhenObtained != DateOnly.FromDateTime(Now))
                 {
                     MessageBoxResult result = MessageBox.Show("课表可能存在变动，是否立即刷新？", "提示", MessageBoxButton.OKCancel, MessageBoxImage.Question);
@@ -165,7 +163,7 @@ public partial class MainViewModel : ObservableObject
             DisplayWeek = ActualWeek;
             Status = ActualWeek > 0 ? $"第{ActualWeek}周" : "未开学";
             _notification.ClassTable = ClassTable;
-            SaveFile(DefaultFileName);
+            SaveFile();
             IsRefreshing = false;
             MessageBox.Show("课表刷新成功！", "消息", MessageBoxButton.OK, MessageBoxImage.Information);
         }
@@ -182,7 +180,7 @@ public partial class MainViewModel : ObservableObject
     {
         OpenFileDialog dialog = new()
         {
-            FileName = DefaultFileName,
+            FileName = DataHelper.DefaultFileName,
             DefaultExt = "xml",
             InitialDirectory = Environment.CurrentDirectory,
             Filter = "课程表数据文件|*.xml"
@@ -206,7 +204,7 @@ public partial class MainViewModel : ObservableObject
     {
         SaveFileDialog dialog = new()
         {
-            FileName = DefaultFileName,
+            FileName = DataHelper.DefaultFileName,
             DefaultExt = "xml",
             InitialDirectory = Environment.CurrentDirectory,
             Filter = "课程表数据文件|*.xml"
@@ -237,14 +235,18 @@ public partial class MainViewModel : ObservableObject
         OnPropertyChanged(nameof(ActualWeek));
     }
 
-    private void LoadFile(string path)
+    private void LoadFile(string path = DataHelper.DefaultFileName)
     {
-        ClassTable = _dataHelper.LoadClassTable(path);
+        _dataHelper.Load(path);
+        ClassTable = _dataHelper.ClassTable;
         DisplayWeek = ActualWeek;
         Status = ActualWeek > 0 ? $"第{ActualWeek}周" : "未开学";
         _notification.ClassTable = ClassTable;
     }
 
-    private void SaveFile(string path)
-        => _dataHelper.SaveClassTable(path, ClassTable);
+    private void SaveFile(string path = DataHelper.DefaultFileName)
+    {
+        _dataHelper.ClassTable = ClassTable;
+        _dataHelper.Save(path);
+    }
 }

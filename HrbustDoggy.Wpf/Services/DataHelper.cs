@@ -1,35 +1,48 @@
-﻿using Hrbust;
-using System.IO;
+﻿using System.IO;
 using System.Xml.Serialization;
+using Hrbust;
+using HrbustDoggy.Wpf.Models;
 
 namespace HrbustDoggy.Wpf.Services;
 
 public class DataHelper
 {
-    private readonly XmlSerializer _classTableSerializer = new(typeof(ClassTable));
-    private readonly XmlSerializer _examsSerializer = new(typeof(Exam[]));
+    public const string DefaultFileName = "Data.xml";
 
-    public ClassTable? LoadClassTable(string path)
+    private readonly XmlSerializer _serializer = new(typeof(Data));
+    private Data? _data;
+
+    public ClassTable? ClassTable
     {
-        using FileStream stream = File.OpenRead(path);
-        return _classTableSerializer.Deserialize(stream) as ClassTable;
+        get => _data?.ClassTable;
+        set
+        {
+            _data ??= new();
+            _data.ClassTable = value;
+        }
     }
 
-    public void SaveClassTable(string path, ClassTable? table)
+    public Exam[]? Exams
     {
-        using FileStream stream = File.Create(path);
-        _classTableSerializer.Serialize(stream, table);
+        get => _data?.Exams;
+        set
+        {
+            _data ??= new();
+            _data.Exams = value;
+        }
     }
 
-    public Exam[]? LoadExams(string path)
+    public void Load(string path = DefaultFileName)
     {
-        using FileStream stream = File.OpenRead(path);
-        return _examsSerializer.Deserialize(stream) as Exam[];
+        using FileStream file = File.OpenRead(path);
+        _data = _serializer.Deserialize(file) as Data;
     }
 
-    public void SaveExams(string path, Exam[]? exams)
+    public void Save(string path = DefaultFileName)
     {
-        using FileStream stream = File.Create(path);
-        _examsSerializer.Serialize(stream, exams);
+        using FileStream file = File.Create(path);
+        _serializer.Serialize(file, _data);
     }
+
+    public static bool FileExist() => File.Exists(DefaultFileName);
 }
