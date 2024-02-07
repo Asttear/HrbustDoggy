@@ -9,7 +9,6 @@
              Loaded="ContentPage_Loaded">
     <ContentPage.Resources>
         <cvt:TableTitleConverter x:Key="TitleConverter" />
-        <cvt:SliderStateConverter x:Key="SliderStateConverter" />
     </ContentPage.Resources>
     <ContentPage.Title>
         <MultiBinding Converter="{StaticResource TitleConverter}">
@@ -46,7 +45,6 @@
                              DateNow="{Binding Now}"
                              DisplayWeek="{Binding DisplayWeek}" />
                 <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
-                    <!-- See https://github.com/dotnet/maui/issues/5287
                     <Grid.Triggers>
                         <DataTrigger Binding="{Binding ActualWeek}"
                                      TargetType="View"
@@ -54,23 +52,12 @@
                             <Setter Property="IsEnabled" Value="False" />
                         </DataTrigger>
                     </Grid.Triggers>
-                    -->
                     <Slider Grid.Column="0"
                             Margin="5,0"
                             Maximum="25"
                             MaximumWidthRequest="500"
                             Minimum="1"
-                            IsEnabled="{Binding ActualWeek, Converter={StaticResource SliderStateConverter}}"
                             Value="{Binding DisplayWeek}">
-                        <!-- See https://github.com/dotnet/maui/issues/18976
-                        <Slider.Triggers>
-                            <DataTrigger Binding="{Binding ActualWeek}"
-                                         TargetType="View"
-                                         Value="0">
-                                <Setter Property="IsEnabled" Value="False" />
-                            </DataTrigger>
-                        </Slider.Triggers>
-                         -->
                     </Slider>
                     <ImageButton Grid.Column="1"
                                  Margin="5,0"
