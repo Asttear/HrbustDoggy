@@ -7,11 +7,8 @@ namespace HrbustDoggy.Maui.ViewModels;
 
 public partial class ExamViewModel : ObservableObject, IQueryAttributable
 {
-    private const string DefaultFileName = "Exams.xml";
-
     private readonly HrbustClient _client;
     private readonly DataHelper _dataHelper;
-    private readonly string _defaultPath;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CurrentExams))]
@@ -27,7 +24,6 @@ public partial class ExamViewModel : ObservableObject, IQueryAttributable
     {
         _client = client;
         _dataHelper = dataHelper;
-        _defaultPath = Path.Combine(FileSystem.CacheDirectory, DefaultFileName);
     }
 
     public IEnumerable<Exam>? CurrentExams => ShowOutdated ? Exams : Exams?.Where(e => e.Time.End > DateTime.Now);
@@ -54,11 +50,11 @@ public partial class ExamViewModel : ObservableObject, IQueryAttributable
         {
             return;
         }
-        if (File.Exists(_defaultPath))
+        if (_dataHelper.FileExist())
         {
             try
             {
-                LoadFile(_defaultPath);
+                LoadFile();
                 return;
             }
             catch (Exception e)
@@ -90,7 +86,7 @@ public partial class ExamViewModel : ObservableObject, IQueryAttributable
         try
         {
             Exams = await Task.Run(_client.GetExamsAsync);
-            SaveFile(_defaultPath);
+            SaveFile();
             IsRefreshing = false;
             await Shell.Current.DisplayAlert("消息", "考试信息刷新成功！", "确定");
         }
@@ -111,7 +107,15 @@ public partial class ExamViewModel : ObservableObject, IQueryAttributable
 
     private static async Task ShowExceptionAsync(Exception e) => await Shell.Current.DisplayAlert("错误", $"出现异常：\n{e.Message}", "确定");
 
-    private void LoadFile(string path) => Exams = _dataHelper.LoadExams(path);
+    private void LoadFile()
+    {
+        _dataHelper.Load();
+        Exams = _dataHelper.Exams;
+    }
 
-    private void SaveFile(string path) => _dataHelper.SaveExams(path, Exams);
+    private void SaveFile()
+    {
+        _dataHelper.Exams = Exams;
+        _dataHelper.Save();
+    }
 }

@@ -1,34 +1,56 @@
-﻿using Hrbust;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
+using Hrbust;
+using HrbustDoggy.Maui.Models;
 
 namespace HrbustDoggy.Maui.Services;
 
 public class DataHelper
 {
-    private readonly XmlSerializer _classTableSerializer = new(typeof(ClassTable));
-    private readonly XmlSerializer _examsSerializer = new(typeof(Exam[]));
+    public const string DefaultFileName = "Data.xml";
 
-    public ClassTable? LoadClassTable(string path)
+    private readonly XmlSerializer _serializer = new(typeof(Data));
+    private readonly string _defaultPath;
+
+    private Data? _data;
+
+    public DataHelper()
     {
-        using FileStream stream = File.OpenRead(path);
-        return _classTableSerializer.Deserialize(stream) as ClassTable;
+        _defaultPath = Path.Combine(FileSystem.CacheDirectory, DefaultFileName);
     }
 
-    public void SaveClassTable(string path, ClassTable? table)
+    public ClassTable? ClassTable
     {
-        using FileStream stream = File.Create(path);
-        _classTableSerializer.Serialize(stream, table);
+        get => _data?.ClassTable;
+        set
+        {
+            _data ??= new();
+            _data.ClassTable = value;
+        }
     }
 
-    public Exam[]? LoadExams(string path)
+    public Exam[]? Exams
     {
-        using FileStream stream = File.OpenRead(path);
-        return _examsSerializer.Deserialize(stream) as Exam[];
+        get => _data?.Exams;
+        set
+        {
+            _data ??= new();
+            _data.Exams = value;
+        }
     }
 
-    public void SaveExams(string path, Exam[]? exams)
+    public void Load(string? path = null)
     {
-        using FileStream stream = File.Create(path);
-        _examsSerializer.Serialize(stream, exams);
+        path ??= _defaultPath;
+        using FileStream file = File.OpenRead(path);
+        _data = _serializer.Deserialize(file) as Data;
     }
+
+    public void Save(string? path = null)
+    {
+        path ??= _defaultPath;
+        using FileStream file = File.Create(path);
+        _serializer.Serialize(file, _data);
+    }
+
+    public bool FileExist() => File.Exists(_defaultPath);
 }

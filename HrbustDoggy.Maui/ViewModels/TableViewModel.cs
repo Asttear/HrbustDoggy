@@ -7,11 +7,8 @@ namespace HrbustDoggy.Maui.ViewModels;
 
 public partial class TableViewModel : ObservableObject, IQueryAttributable
 {
-    private const string DefaultFileName = "ClassData.xml";
-
     private readonly HrbustClient _client;
     private readonly DataHelper _dataHelper;
-    private readonly string _defaultPath;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ActualWeek))]
@@ -32,7 +29,6 @@ public partial class TableViewModel : ObservableObject, IQueryAttributable
     {
         _client = client;
         _dataHelper = dataHelper;
-        _defaultPath = Path.Combine(FileSystem.CacheDirectory, DefaultFileName);
     }
 
     public int ActualWeek => ClassTable?.GetWeek(DateOnly.FromDateTime(DateTime.Now)) ?? 0;
@@ -48,11 +44,11 @@ public partial class TableViewModel : ObservableObject, IQueryAttributable
         {
             return;
         }
-        if (File.Exists(_defaultPath))
+        if (_dataHelper.FileExist())
         {
             try
             {
-                LoadFile(_defaultPath);
+                LoadFile();
                 if (ActualWeek == 0 && ClassTable?.DateWhenObtained != DateOnly.FromDateTime(Now))
                 {
                     if (await Shell.Current.DisplayAlert("提示", "课表可能存在变动，是否立即刷新？", "确定", "取消"))
@@ -92,7 +88,7 @@ public partial class TableViewModel : ObservableObject, IQueryAttributable
         {
             ClassTable = await Task.Run(() => _client.GetClassTableAsync());
             DisplayWeek = ActualWeek;
-            SaveFile(_defaultPath);
+            SaveFile();
             IsRefreshing = false;
             await Shell.Current.DisplayAlert("刷新成功", "课表刷新成功！", "确认");
         }
@@ -116,11 +112,16 @@ public partial class TableViewModel : ObservableObject, IQueryAttributable
 
     private static Task ShowExceptionAsync(Exception e) => Shell.Current.DisplayAlert("出现异常", e.Message, "确认");
 
-    private void LoadFile(string path)
+    private void LoadFile()
     {
-        ClassTable = _dataHelper.LoadClassTable(path);
+        _dataHelper.Load();
+        ClassTable = _dataHelper.ClassTable;
         DisplayWeek = ActualWeek;
     }
 
-    private void SaveFile(string path) => _dataHelper.SaveClassTable(path, ClassTable);
+    private void SaveFile()
+    {
+        _dataHelper.ClassTable = ClassTable;
+        _dataHelper.Save();
+    }
 }
